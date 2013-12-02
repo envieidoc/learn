@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
-
 #description: send emails
 #usage: mail to@domain.tld "message"
 
