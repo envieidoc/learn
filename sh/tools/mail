@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 #description: send emails
 #usage: mail to@domain.tld "message"
 
