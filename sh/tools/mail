@@ -23,7 +23,7 @@ fi
 [ "${#}" -eq "0" ] && { printf "Usage: %s\\n" "$(expr "${0}" : '.*/\([^/]*\)') MAIL_ADDRESS MESSAGE ..." >&2; exit 1; }
 
 if ! command -v "curl" >/dev/null 2>&1; then
-    printf "%s\\n" "You need to install curl: $ sudo apt-get install curl" >&2
+    printf "%s\\n" "you need to install 'curl' to run this program" >&2
     exit 1
 fi
 
