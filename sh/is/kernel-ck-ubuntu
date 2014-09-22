@@ -1,18 +1,19 @@
 #!/bin/sh
 #http://viajemotu.wordpress.com/2012/08/13/kernel-ck-for-ubuntu-precise/
-#https://github.com/chilicuil/learn/blob/master/sh/is/kernel-ck-ubuntu
+#https://github.com/chilicuil/learn/blob/master/sh/is/kernel-ck-ubuntu (ORIGINAL)
+#https://github.com/envieidoc/learn/blob/master/sh/is/kernel-ck-ubuntu
 
 # $ time sh kernel-ck-ubuntu
 
 #####################################
 #kernel version base
-kernel="3.15"
+kernel="3.16"
 #kernel specific version
-patchkernel="3.15.5"
+patchkernel="3.16.3"
 #BFQ patch
-bfq="3.15.0-v7r5"
+bfq="3.16.0-v7r5"
 #CK patch
-patchck="3.15-ck1"
+patchck="3.16-ck2"
 #####################################
 
 ################################################################################
@@ -73,7 +74,7 @@ _header()
 {
     clear
     _printfl "Kernel ck builder (${patchkernel})"
-    printf "%b\\n" "\033[1m Updates:\033[0m     https://github.com/chilicuil/learn/blob/master/sh/is/kernel-ck-ubuntu"
+    printf "%b\\n" "\033[1m Updates:\033[0m     https://github.com/envieidoc/learn/blob/master/sh/is/kernel-ck-ubuntu"
     printf "%b\\n" "\033[1m Patches:\033[0m     -bfq, -ck"
     printf "%b\\n" "\033[1m Config:\033[0m      http://repo-ck.com/"
     _printfl "Current configuration: edit the script to change it"
