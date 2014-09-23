@@ -1,0 +1,100 @@
+#!/bin/bash
+#### Скрипт обновления баз блокирования для squidguard (Ubuntu 13.10 x64)
+#### sed script: http://notes.ozmonet.com/index.php?title=Network-Wide_Adblock
+#### other subscriptions:  https://adblockplus.org/en/subscriptions
+#### easy subscription:  http://easylist.adblockplus.org/en/
+#### Created 16.12.13
+#### by: envieidoc@gmail.com
+
+echo `date +%Y.%m.%d__%H:%M:%S`' Обновление баз началось' >> /var/log/squid_update_base.log
+
+echo "UPDATE SQUIDGUARD ALL BASE!!!"
+SQUIDGUARD="/var/lib/squidguard/db/"
+
+echo "Create tmp folders..."
+mkdir /tmp/squidbase
+TMPSQ="/tmp/squidbase/"
+
+#Основная подписка
+EASYLIST="https://easylist-downloads.adblockplus.org/easylist.txt"
+EASYPRIVACY="https://easylist-downloads.adblockplus.org/easyprivacy.txt"
+#Дополнение: Против счётчиков
+CNTBLOCK="https://ruadlist.googlecode.com/svn/trunk/cntblock.txt"
+ADVBLOCK="https://ruadlist.googlecode.com/svn/trunk/advblock.txt"
+#Дополнение: BitBlock
+BITBLOCK="https://ruadlist.googlecode.com/svn/trunk/bitblock.txt"
+#Дополнение: Анти-порно подписка
+ANTINUHA="https://ruadlist.googlecode.com/svn/trunk/antinuha.txt"
+
+FLIST="/tmp/easylist.txt"
+FPRIVACY="/tmp/easyprivacy.txt"
+FCNTBLOCK="/tmp/cntblock.txt"
+FADVBLOCK="/tmp/advblock.txt"
+FBITBLOCK="/tmp/bitblock.txt"
+FANTINUHA="/tmp/antinuha.txt"
+
+OUTLIST="$SQUIDGUARD/adblock/easylist"
+OUTPRIVACY="$SQUIDGUARD/adblock/easyprivacy"
+OUTCNTBLOCK="$SQUIDGUARD/adblock/cntblock"
+OUTADVBLOCK="$SQUIDGUARD/adblock/advblock"
+OUTBITBLOCK="$SQUIDGUARD/adblock/bitblock"
+OUTANTINUHA="$SQUIDGUARD/adblock/antinuha"
+
+# adblock.sed
+ADBLOCK='/@@.*/d; /^!.*/d; /^\[.*\]$/d; s#http://##g; s,[.?=&/|],\\&,g; s#*#.*#g; s,\$.*$,,g;'
+
+# download lists
+echo "Download lists..."
+wget -q -A "Mozilla 5/0" -O "$FLIST" "$EASYLIST"
+wget -q -A "Mozilla 5/0" -O "$FPRIVACY" "$EASYPRIVACY"
+wget -q -A "Mozilla 5/0" -O "$FCNTBLOCK" "$CNTBLOCK"
+wget -q -A "Mozilla 5/0" -O "$FADVBLOCK" "$ADVBLOCK"
+wget -q -A "Mozilla 5/0" -O "$FBITBLOCK" "$BITBLOCK"
+wget -q -A "Mozilla 5/0" -O "$FANTINUHA" "$ANTINUHA"
+echo "Compiling lists..."
+sed -e "$ADBLOCK" "$FLIST" > "$OUTLIST"
+sed -e "$ADBLOCK" "$FPRIVACY" > "$OUTPRIVACY"
+sed -e "$ADBLOCK" "$FCNTBLOCK" > "$OUTCNTBLOCK"
+sed -e "$ADBLOCK" "$FADVBLOCK" > "$OUTADVBLOCK"
+sed -e "$ADBLOCK" "$FBITBLOCK" > "$OUTBITBLOCK"
+sed -e "$ADBLOCK" "$FANTINUHA" > "$OUTANTINUHA"
+echo "Clear tmp files..."
+# delete downloaded files
+rm "$FANTINUHA" "$FBITBLOCK" "$FADVBLOCK" "$FCNTBLOCK" "$FPRIVACY" "$FLIST"
+# restart squid3
+#service squid3 restart
+
+#cd /tmp
+cd /tmp/squidbase
+##Update shalalalist
+echo "Download base..."
+wget www.shallalist.de/Downloads/shallalist.tar.gz
+wget http://squidguard.mesd.k12.or.us/blacklists.tgz
+
+echo "Copy blacklist..."
+
+tar xvzf "$TMPS"blacklists.tgz
+cp -r "$TMPS"blacklists/* "$SQUIDGUARD"blacklists/
+
+echo "Copy shallalist..."
+tar xvzf "$TMPS"shallalist.tar.gz
+
+cp -r "$TMPS"BL/* "$SQUIDGUARD"
+
+echo "Clear...trash /tmp..."
+rm -r "$TMPSQ"
+
+echo "Start update base"
+/usr/bin/squidGuard -d -C all
+
+echo "Updater OK"
+echo "Fix permissions"
+chmod -R 770 $SQUIDGUARD/*
+chown -R proxy:proxy $SQUIDGUARD/*
+echo "Fix permissions OK"
+echo "Appy Proxy new settings"
+squid3 -k reconfigure
+echo "Appy Proxy OK"
+
+echo `date +%Y.%m.%d__%H:%M:%S`' Обновление баз окончено' >> /var/log/squid_update_base.log
+echo "Done!"

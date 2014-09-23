@@ -1,0 +1,16 @@
+#!/bin/bash
+#### Скрипт пересоздание кэша squid3 (Ubuntu 13.10 x64)
+#### Created 17.12.13 13-00
+#### by: envieidoc@gmail.com
+echo `date +%Y.%m.%d__%H:%M:%S`' Пересоздание кэша началось' >> /var/log/squid_rewrite_cache.log
+service squid3 stop
+echo "Service SQUID3 stopped..."
+rm -r /var/spool/squid333/*
+echo "Cache SQUID3 cleared..."
+squid3 -z
+echo "Cache SQUID3 created..."
+service squid3 restart
+echo "Service SQUID3 started"
+echo "Done!"
+echo `date +%Y.%m.%d__%H:%M:%S`' Пересоздание кэша завершено' >> /var/log/squid_rewrite_cache.log
+echo "Done!"
